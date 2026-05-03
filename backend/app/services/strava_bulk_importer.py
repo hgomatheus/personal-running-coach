@@ -247,8 +247,8 @@ def import_activities(
             strava_activity_id=record.strava_activity_id,
             date=record.date,
             started_at=None,
-            distance_metres=record.distance_metres,
-            duration_seconds=record.duration_seconds,
+            distance_metres=float(record.distance_metres),
+            duration_seconds=int(record.duration_seconds),
             avg_pace_sec_per_km=avg_pace,
             avg_heart_rate=record.avg_heart_rate,
             elevation_gain_metres=record.elevation_gain_metres,
@@ -267,11 +267,15 @@ def import_activities(
     vdot: Optional[float] = None
     pace_zones_updated = False
 
+    # Require at least 3 km to get a meaningful VDOT estimate.
+    # Short efforts (e.g. 200 m strides) produce astronomically inflated scores.
+    MIN_VDOT_DISTANCE_M = 3000
+
     candidate_runs = (
         db.query(Run)
         .filter(
             Run.profile_id == profile_id,
-            Run.distance_metres >= 1000,
+            Run.distance_metres >= MIN_VDOT_DISTANCE_M,
             Run.duration_seconds > 0,
         )
         .all()
@@ -281,8 +285,10 @@ def import_activities(
     for run in candidate_runs:
         try:
             v = calculate_vdot(run.distance_metres, run.duration_seconds)
-            if best_vdot is None or v > best_vdot:
-                best_vdot = v
+            # Sanity-check: realistic VDOT range is roughly 20–85
+            if 20 <= v <= 85:
+                if best_vdot is None or v > best_vdot:
+                    best_vdot = v
         except Exception:
             pass
 

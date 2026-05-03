@@ -216,9 +216,12 @@
 				currentStreak = calculateStreak(runs.value);
 			}
 
-			// Active plan
+			// Active plan — look for active status first, then any plan
 			if (plans.status === 'fulfilled' && plans.value.length > 0) {
-				const active = plans.value.find((p) => p.status === 'active') ?? plans.value[0];
+				const active =
+					plans.value.find((p) => p.status === 'active') ??
+					plans.value.find((p) => p.status !== 'archived') ??
+					plans.value[0];
 				if (active) {
 					try {
 						activePlan = await plansApi.get(active.id, profileId);
