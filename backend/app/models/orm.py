@@ -80,7 +80,7 @@ class Run(Base):
     distance_metres = Column(Float, nullable=False)
     duration_seconds = Column(Integer, nullable=False)
     avg_pace_sec_per_km = Column(Float, nullable=True)
-    avg_heart_rate = Column(Integer, nullable=True)
+    avg_heart_rate = Column(Float, nullable=True)  # stored as float (Strava sends decimals)
     elevation_gain_metres = Column(Float, nullable=True)
     run_type = Column(String(20), nullable=True)
     notes = Column(String, nullable=True)

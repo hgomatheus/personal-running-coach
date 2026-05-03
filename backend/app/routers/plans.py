@@ -159,7 +159,7 @@ def create_plan(
                 draft.status = "archived"
                 gen_db.commit()
         except Exception as e:
-            logger.error(f"Background plan generation failed: {e}")
+            logger.error(f"Background plan generation failed: {e}", exc_info=True)
             gen_db_plan = gen_db.query(TrainingPlan).filter(TrainingPlan.id == plan_id).first()
             if gen_db_plan:
                 gen_db_plan.status = "archived"
@@ -167,7 +167,7 @@ def create_plan(
         finally:
             gen_db.close()
 
-    background_tasks.add_task(asyncio.run, _generate())
+    background_tasks.add_task(_generate)
     return plan
 
 
@@ -246,11 +246,11 @@ def regenerate_plan(
         try:
             await generate_plan(profile_id, race_goal_id, gen_db)
         except Exception as e:
-            logger.error(f"Background plan regeneration failed: {e}")
+            logger.error(f"Background plan regeneration failed: {e}", exc_info=True)
         finally:
             gen_db.close()
 
-    background_tasks.add_task(asyncio.run, _regenerate())
+    background_tasks.add_task(_regenerate)
     return plan
 
 

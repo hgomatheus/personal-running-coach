@@ -134,7 +134,7 @@ def create_run(
                 finally:
                     adapt_db.close()
 
-            background_tasks.add_task(asyncio.run, _adapt())
+            background_tasks.add_task(_adapt)
 
     db.refresh(run)
     return run

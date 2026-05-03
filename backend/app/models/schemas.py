@@ -156,7 +156,7 @@ class RunCreate(BaseModel):
     date: date
     distance_metres: float = Field(gt=0)
     duration_seconds: int = Field(gt=0)
-    avg_heart_rate: int | None = Field(None, ge=30, le=250)
+    avg_heart_rate: float | None = Field(None, ge=30, le=250)
     elevation_gain_metres: float | None = None
     run_type: str | None = None
     notes: str | None = None
@@ -166,7 +166,7 @@ class RunUpdate(BaseModel):
     date: Optional[date] = None
     distance_metres: float | None = Field(None, gt=0)
     duration_seconds: int | None = Field(None, gt=0)
-    avg_heart_rate: int | None = Field(None, ge=30, le=250)
+    avg_heart_rate: float | None = None
     elevation_gain_metres: float | None = None
     run_type: str | None = None
     notes: str | None = None
@@ -182,7 +182,7 @@ class RunResponse(BaseModel):
     distance_metres: float
     duration_seconds: int
     avg_pace_sec_per_km: float | None
-    avg_heart_rate: int | None
+    avg_heart_rate: float | None  # stored as float from Strava CSV; display rounded
     elevation_gain_metres: float | None
     run_type: str | None
     notes: str | None
