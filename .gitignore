@@ -1,0 +1,44 @@
+# ── Secrets ──────────────────────────────────────────────────────────────────
+.env
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# ── Testing / coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+*.xml
+
+# ── Node / SvelteKit ─────────────────────────────────────────────────────────
+node_modules/
+frontend/build/
+frontend/.svelte-kit/
+frontend/dist/
+
+# ── Database & runtime data ───────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+/data/
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# (docker-compose.yml is intentionally tracked)
+
+# ── OS / editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+*.swp
+*.swo

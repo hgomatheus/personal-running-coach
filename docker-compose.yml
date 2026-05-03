@@ -1,0 +1,54 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # Backend binds only to localhost — accessible via nginx proxy only
+    ports:
+      - "127.0.0.1:8000:8000"
+    mem_limit: 512m
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - STRAVA_CLIENT_ID=${STRAVA_CLIENT_ID}
+      - STRAVA_CLIENT_SECRET=${STRAVA_CLIENT_SECRET}
+      - SECRET_KEY=${SECRET_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - APP_BASE_URL=${APP_BASE_URL}
+    volumes:
+      - db-data:/data/db
+      - logs:/data/logs
+      - backups:/data/backups
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    # Frontend binds to all interfaces — accessible on LAN
+    ports:
+      - "0.0.0.0:3000:3000"
+    mem_limit: 128m
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  db-data:
+    name: running-coach-db-data
+  logs:
+    name: running-coach-logs
+  backups:
+    name: running-coach-backups
