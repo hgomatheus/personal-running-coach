@@ -25,6 +25,7 @@ from app.routers import (
     settings as settings_router,
     zones,
     plans,
+    race_goals,
     workouts,
     runs,
     stats,
@@ -112,6 +113,7 @@ app.include_router(profiles.router, prefix="/api/v1")
 app.include_router(settings_router.router, prefix="/api/v1")
 app.include_router(zones.router, prefix="/api/v1")
 app.include_router(plans.router, prefix="/api/v1")
+app.include_router(race_goals.router, prefix="/api/v1")
 app.include_router(workouts.router, prefix="/api/v1")
 app.include_router(runs.router, prefix="/api/v1")
 app.include_router(stats.router, prefix="/api/v1")
